@@ -1,23 +1,21 @@
 package main
 
 import (
+	"dibantuin-be/config"
 	"dibantuin-be/config/database"
+	"dibantuin-be/config/redis"
 	"dibantuin-be/entity"
 	"dibantuin-be/routes"
-	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func InitializeApp() *gin.Engine {
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatal("Error loading ENV")
-	}
+	config.InitConfig()
 
 	r := gin.Default()
+
+	redis.ConnectRedis()
 	db := database.ConnectDatabase()
 
 	//auto migrate
