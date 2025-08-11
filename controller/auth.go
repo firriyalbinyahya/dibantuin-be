@@ -34,6 +34,44 @@ func (ac *AuthController) Register(c *gin.Context) {
 	response.BuildSuccessResponse(c, http.StatusCreated, "registration successful", req, nil)
 }
 
+func (ac *AuthController) CreateAdmin(c *gin.Context) {
+	var req entity.Register
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BuildErrorResponse(c, err)
+		return
+	}
+
+	fromAPIKeyVal, exists := c.Get("api-key")
+	if !exists {
+		fromAPIKeyVal = false
+	}
+	fromAPIKey, ok := fromAPIKeyVal.(bool)
+	if !ok {
+		fromAPIKey = false
+	}
+
+	roleVal, _ := c.Get("role")
+	role, _ := roleVal.(string)
+	var idAdminInt uint64 = 0
+
+	userRaw, _ := c.Get("currentUser")
+
+	user, ok := userRaw.(*entity.User)
+	if ok {
+		idAdminInt = user.ID
+	}
+
+	err := ac.Service.CreateaAdmin(&req, fromAPIKey, role, idAdminInt)
+	if err != nil {
+		response.BuildErrorResponse(c, err)
+		return
+	}
+
+	response.BuildSuccessResponse(c, http.StatusCreated, "The admin account was created successfully", req, nil)
+
+}
+
 func (ac *AuthController) Login(c *gin.Context) {
 	var request entity.Login
 

@@ -16,7 +16,8 @@ type JWT struct {
 }
 
 var Config struct {
-	JWT JWT
+	JWT         JWT
+	AdminAPIKey string
 }
 
 func InitConfig() {
@@ -33,5 +34,11 @@ func InitConfig() {
 		RefreshSecret:      os.Getenv("REFRESH_SECRET"),
 		AccessExpiryInSec:  accessExp,
 		RefreshExpiryInSec: refreshExp,
+	}
+
+	Config.AdminAPIKey = os.Getenv("ADMIN_API_KEY")
+
+	if Config.AdminAPIKey == "" {
+		log.Fatal("ADMIN_API_KEY is required")
 	}
 }

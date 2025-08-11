@@ -7,6 +7,7 @@ import (
 	"dibantuin-be/utils/auth"
 	"dibantuin-be/utils/response"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -16,14 +17,15 @@ import (
 )
 
 type AuthService struct {
-	Repository *repository.UserRepository
+	Repository     *repository.UserRepository
+	UserLogService *UserLogService
 }
 
-func NewAuthService(repository *repository.UserRepository) *AuthService {
-	return &AuthService{Repository: repository}
+func NewAuthService(repository *repository.UserRepository, userLogService *UserLogService) *AuthService {
+	return &AuthService{Repository: repository, UserLogService: userLogService}
 }
 
-func (as *AuthService) Register(req *entity.Register) error {
+func (as *AuthService) CreateUser(req *entity.Register, role string, actorUserID uint64) error {
 	// mengecek apakah email sudah ada
 	_, err := as.Repository.GetByEmail(req.Email)
 	if err == nil {
@@ -39,10 +41,48 @@ func (as *AuthService) Register(req *entity.Register) error {
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
-		Role:     "user",
+		Role:     role,
 	}
 
-	return as.Repository.Create(newUser)
+	err = as.Repository.Create(newUser)
+	if err != nil {
+		return err
+	}
+
+	if role == "user" {
+		actorUserID = newUser.ID
+	}
+
+	// Log sukses menambah user
+	desc := fmt.Sprintf("%s user registered with email %s", role, newUser.Email)
+	err = as.UserLogService.LogUserAction(actorUserID, "CREATE_USER", "users", newUser.ID, desc)
+	if err != nil {
+		log.Printf("Failed to create user log: %v", err)
+	}
+
+	return nil
+}
+
+func (as *AuthService) Register(req *entity.Register) error {
+	return as.CreateUser(req, "user", 0)
+}
+
+func (as *AuthService) CreateaAdmin(req *entity.Register, fromAPIKey bool, role string, idAdmin uint64) error {
+	if fromAPIKey {
+		count, err := as.Repository.CountAdmins()
+		if err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("you have to ask another admin to create an admin account")
+		}
+	} else {
+		if role != "admin" {
+			return errors.New("only admins can create another admin")
+		}
+	}
+
+	return as.CreateUser(req, "admin", idAdmin)
 }
 
 func (as *AuthService) Login(req *entity.Login) (*entity.UserLoginResponse, error) {
@@ -75,6 +115,13 @@ func (as *AuthService) Login(req *entity.Login) (*entity.UserLoginResponse, erro
 		time.Until(*refreshExp)).Err()
 	if err != nil {
 		return nil, err
+	}
+
+	//user log login
+	desc := fmt.Sprintf("%s login with email %s", user.Name, user.Email)
+	err = as.UserLogService.LogUserAction(user.ID, "LOGIN", "users", user.ID, desc)
+	if err != nil {
+		log.Printf("Failed to create user log: %v", err)
 	}
 
 	return &entity.UserLoginResponse{
@@ -124,6 +171,13 @@ func (as *AuthService) Logout(userID uint64) error {
 	err := redis.RedisClient.Del(redis.Ctx, "refresh_token:"+userIDStr).Err()
 	if err != nil {
 		return err
+	}
+
+	//user log logout
+	desc := fmt.Sprintf("user id : %s logout", userIDStr)
+	err = as.UserLogService.LogUserAction(userID, "LOGOUT", "users", userID, desc)
+	if err != nil {
+		log.Printf("Failed to create user log: %v", err)
 	}
 
 	return nil

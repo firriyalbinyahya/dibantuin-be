@@ -22,3 +22,13 @@ func (ar *UserRepository) GetByEmail(email string) (data *entity.User, err error
 func (ar *UserRepository) Create(user *entity.User) error {
 	return ar.DB.Create(user).Error
 }
+
+func (ar *UserRepository) CountAdmins() (int64, error) {
+	var count int64
+	if err := ar.DB.Model(&entity.User{}).
+		Where("role = ?", "admin").
+		Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
