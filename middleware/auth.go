@@ -62,6 +62,7 @@ func AdminOnly() gin.HandlerFunc {
 		}
 
 		c.Set("currentUser", user)
+		c.Set("user_id", user.ID)
 		c.Next()
 	}
 }
@@ -141,6 +142,7 @@ func AuthUserMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("currentUser", user)
+		c.Set("user_id", user.ID)
 		c.Next()
 	}
 }

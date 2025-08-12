@@ -6,6 +6,7 @@ type DonationProgram struct {
 	ID            uint64    `gorm:"primaryKey;autoIncrement"`
 	UserID        uint64    `gorm:"not null"`
 	CategoryID    uint64    `gorm:"not null"`
+	Creator       string    `gorm:"type:varchar(100);not null"`
 	Title         string    `gorm:"type:varchar(255);not null"`
 	Description   string    `gorm:"type:text;not null"`
 	TargetAmount  float64   `gorm:"type:decimal(15,2);not null"`
