@@ -5,6 +5,8 @@ import (
 	"dibantuin-be/service"
 	"dibantuin-be/utils/response"
 	"errors"
+	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -72,5 +74,46 @@ func (dpc *DonationProgramController) VerifyProgram(c *gin.Context) {
 	}
 
 	response.BuildSuccessResponse(c, http.StatusOK, "Verification updated", verificationProgramRequest, nil)
+}
 
+func (dpc *DonationProgramController) ListDonationPrograms(c *gin.Context) {
+	statusRequest := c.Query("statusRequest")
+	search := c.Query("search")
+
+	limitStr := c.DefaultQuery("limit", "10")
+	pageStr := c.DefaultQuery("page", "1")
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 10
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
+	}
+
+	categoryIDStr := c.Query("categoryId")
+	var categoryID uint64
+	if categoryIDStr != "" {
+		parsedCategoryID, err := strconv.ParseUint(categoryIDStr, 10, 64)
+		if err != nil {
+			response.BuildErrorResponse(c, fmt.Errorf("invalid category_id"))
+			return
+		}
+		categoryID = parsedCategoryID
+	}
+
+	programs, total, err := dpc.Service.ListDonationPrograms(statusRequest, search, limit, page, categoryID)
+	if err != nil {
+		response.BuildErrorResponse(c, err)
+		return
+	}
+
+	response.BuildSuccessResponse(c, http.StatusOK, "Success to get list of programs", map[string]interface{}{
+		"data":       programs,
+		"total":      total,
+		"page":       page,
+		"limit":      limit,
+		"total_page": int(math.Ceil(float64(total) / float64(limit))),
+	}, nil)
 }

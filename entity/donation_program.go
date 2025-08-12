@@ -55,3 +55,18 @@ type DonationProgramRequestCreate struct {
 	AdminNotes   string    `json:"admin_notes,omitempty"`
 	ContactInfo  string    `json:"contact_info" binding:"required"`
 }
+
+type DonationProgramListItem struct {
+	ID            uint64
+	CategoryID    uint64
+	Title         string
+	Description   string
+	TargetAmount  float64
+	CurrentAmount float64
+	Creator       string
+	StartDate     time.Time
+	EndDate       time.Time
+	CoverImage    string
+	Status        string
+	StatusRequest string
+}
