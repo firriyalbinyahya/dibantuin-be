@@ -32,6 +32,17 @@ func (dpr *DonationProgramRepository) GetDonationProgramRequestById(id uint64) (
 	return &request, nil
 }
 
+func (dpr *DonationProgramRepository) GetDonationProgramById(id uint64) (*entity.DonationProgram, error) {
+	var program entity.DonationProgram
+	if err := dpr.DB.Preload("Category").
+		Preload("DonationProgramRequest").
+		First(&program, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &program, nil
+}
+
 func (dpr *DonationProgramRepository) UpdateStatusDonationProgramRequestById(id uint64, status string) error {
 	return dpr.DB.Model(&entity.DonationProgramRequest{}).Where("id = ?", id).Update("status_request", status).Error
 }

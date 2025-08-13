@@ -20,6 +20,10 @@ type DonationProgram struct {
 	ContactInfo   string    `gorm:"type:varchar(100);not null"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+
+	// Relasi
+	Category               Category                 `gorm:"foreignKey:CategoryID;references:ID"`
+	DonationProgramRequest []DonationProgramRequest `gorm:"foreignKey:ProgramID;references:ID"`
 }
 
 type DonationProgramRequest struct {

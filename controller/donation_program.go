@@ -117,3 +117,21 @@ func (dpc *DonationProgramController) ListDonationPrograms(c *gin.Context) {
 		"total_page": int(math.Ceil(float64(total) / float64(limit))),
 	}, nil)
 }
+
+func (dpc *DonationProgramController) GetDonationProgramDetail(c *gin.Context) {
+	id := c.Param("id")
+	programID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		response.BuildErrorResponse(c, fmt.Errorf("invalid program_id"))
+		return
+	}
+
+	program, err := dpc.Service.GetDonationProgramDetail(programID)
+	if err != nil {
+		response.BuildErrorResponse(c, fmt.Errorf("failed to fetch data detail donation program"))
+		return
+	}
+
+	response.BuildSuccessResponse(c, http.StatusOK, "Success get data detail donation program",
+		program, nil)
+}

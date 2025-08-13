@@ -121,3 +121,7 @@ func (dps *DonationProgramService) VerifyProgram(donationProgramRequestID uint64
 func (dps *DonationProgramService) ListDonationPrograms(statusRequest, search string, limit, page int, categoryID uint64) (*[]entity.DonationProgramListItem, int64, error) {
 	return dps.DonationProgramRepository.ListDonationPrograms(statusRequest, search, limit, page, categoryID)
 }
+
+func (dps *DonationProgramService) GetDonationProgramDetail(id uint64) (*entity.DonationProgram, error) {
+	return dps.DonationProgramRepository.GetDonationProgramById(id)
+}
