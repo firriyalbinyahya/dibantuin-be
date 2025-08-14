@@ -11,5 +11,8 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		SetupAuthRoutes(api, db)
 		SetupDonationProgramRoutes(api, db)
 		SetupDonationTransactionRoutes(api, db)
+		SetupUserLogRoutes(api, db)
+		SetupCategoryRoutes(api, db)
+		SetupUploadRoutes(api)
 	}
 }

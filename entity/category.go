@@ -9,3 +9,7 @@ type Category struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+type CategoryRequest struct {
+	Name string `json:"name" binding:"required"`
+}

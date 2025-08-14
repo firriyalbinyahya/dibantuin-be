@@ -18,9 +18,9 @@ type MoneyTransactionDonation struct {
 type MoneyTransactionDonationRequest struct {
 	ProgramID       uint64  `json:"program_id" binding:"required"`
 	Amount          float64 `json:"amount" binding:"required"`
-	DonorsName      string  `json:"donors_name" binding:"required"`
+	DonorsName      string  `json:"donors_name,omitempty"`
 	DonationMessage string  `json:"donation_message,omitempty"`
-	DonationPhoto   string  `json:"donation_photo,omitempty"`
+	DonationPhoto   string  `json:"donation_photo" binding:"required"`
 }
 
 type DonationTransactionListItem struct {

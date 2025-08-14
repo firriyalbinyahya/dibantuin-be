@@ -13,7 +13,6 @@ type DonationProgram struct {
 	CurrentAmount float64   `gorm:"type:decimal(15,2);default:0"`
 	RekeningInfo  string    `gorm:"type:varchar(255);not null"`
 	IsPersonal    bool      `gorm:"not null;default:false"`
-	Status        string    `gorm:"type:enum('soon','ongoing','over','success');default:'soon';not null"`
 	StartDate     time.Time `gorm:"not null"`
 	EndDate       time.Time `gorm:"not null"`
 	CoverImage    string    `gorm:"type:varchar(255);not null"`
@@ -71,6 +70,5 @@ type DonationProgramListItem struct {
 	StartDate     time.Time
 	EndDate       time.Time
 	CoverImage    string
-	Status        string
 	StatusRequest string
 }

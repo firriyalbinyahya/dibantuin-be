@@ -43,6 +43,19 @@ func (dpr *DonationProgramRepository) GetDonationProgramById(id uint64) (*entity
 	return &program, nil
 }
 
+func (dpr *DonationProgramRepository) GetProgramRequestByProgramID(programID uint64) (*entity.DonationProgramRequest, error) {
+	var req entity.DonationProgramRequest
+	err := dpr.DB.
+		Where("program_id = ?", programID).
+		Order("created_at DESC").
+		Limit(1).
+		First(&req).Error
+	if err != nil {
+		return nil, err
+	}
+	return &req, nil
+}
+
 func (dpr *DonationProgramRepository) UpdateStatusDonationProgramRequestById(id uint64, status string) error {
 	return dpr.DB.Model(&entity.DonationProgramRequest{}).Where("id = ?", id).Update("status_request", status).Error
 }

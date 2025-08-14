@@ -36,6 +36,13 @@ func (dtr *DonationTransactionRepository) UpdateStatusDonationTransactionById(id
 	return dtr.DB.Model(&entity.MoneyTransactionDonation{}).Where("id = ?", id).Update("donation_status", status).Error
 }
 
+func (dtr *DonationTransactionRepository) IncreaseCurrentAmount(programID uint64, amount float64) error {
+	return dtr.DB.Model(&entity.DonationProgram{}).
+		Where("id = ?", programID).
+		UpdateColumn("current_amount", gorm.Expr("current_amount + ?", amount)).
+		Error
+}
+
 func (dtr *DonationTransactionRepository) ListDonationTransactions(userID *uint64, status, search string, limit, page int) (*[]entity.DonationTransactionListItem, int64, error) {
 	var transactions []entity.DonationTransactionListItem
 	var totalItems int64

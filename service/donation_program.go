@@ -50,7 +50,6 @@ func (dps *DonationProgramService) CreateRequest(req *entity.DonationProgramRequ
 			CurrentAmount: 0,
 			RekeningInfo:  req.RekeningInfo,
 			IsPersonal:    req.IsPersonal,
-			Status:        "soon",
 			StartDate:     req.StartDate,
 			EndDate:       req.EndDate,
 			CoverImage:    req.CoverImage,

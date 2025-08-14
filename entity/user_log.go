@@ -11,3 +11,10 @@ type UserLog struct {
 	Description string `gorm:"type:text"`
 	CreatedAt   time.Time
 }
+
+type PaginatedUserLogs struct {
+	Items       []UserLog `json:"items"`
+	TotalItems  int64     `json:"total_items"`
+	TotalPages  int       `json:"total_pages"`
+	CurrentPage int       `json:"current_page"`
+}

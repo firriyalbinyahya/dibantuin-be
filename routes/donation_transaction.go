@@ -15,7 +15,7 @@ func SetupDonationTransactionRoutes(router *gin.RouterGroup, db *gorm.DB) {
 	userLogRepository := repository.NewUserLogRepository(db)
 	transactionVerificationRepository := repository.NewTransactionVerificationRepository(db)
 	userLogService := service.NewUserLogService(userLogRepository)
-	donationTransactionService := service.NewDonationTransactionService(donationTransactionRepository, transactionVerificationRepository, userLogService)
+	donationTransactionService := service.NewDonationTransactionService(db, donationTransactionRepository, transactionVerificationRepository, userLogService)
 	donationTransactionController := controller.NewDonationTransactionController(donationTransactionService)
 
 	program := router.Group("/donation")
