@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/student/student4
+            cd /home/student/final-project/student4
             git pull origin master
             docker compose down
             docker compose build --no-cache
