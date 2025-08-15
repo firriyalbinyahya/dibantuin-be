@@ -8,4 +8,6 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     env_file:
       - .env
+    volumes:
+      - .env:/app/.env
     restart: always
