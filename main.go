@@ -6,6 +6,8 @@ import (
 	"dibantuin-be/config/redis"
 	"dibantuin-be/entity"
 	"dibantuin-be/routes"
+	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,5 +32,11 @@ func InitializeApp() *gin.Engine {
 
 func main() {
 	app := InitializeApp()
-	app.Run(":8080")
+
+	port := os.Getenv("APP_PORT")
+	if port == "" {
+		port = "3000" // Default port
+	}
+	fmt.Println("Server is running on port " + port)
+	app.Run(":" + port)
 }
