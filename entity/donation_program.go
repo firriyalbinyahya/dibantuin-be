@@ -3,42 +3,42 @@ package entity
 import "time"
 
 type DonationProgram struct {
-	ID            uint64    `gorm:"primaryKey;autoIncrement"`
-	UserID        uint64    `gorm:"not null"`
-	CategoryID    uint64    `gorm:"not null"`
-	Creator       string    `gorm:"type:varchar(100);not null"`
-	Title         string    `gorm:"type:varchar(255);not null"`
-	Description   string    `gorm:"type:text;not null"`
-	TargetAmount  float64   `gorm:"type:decimal(15,2);not null"`
-	CurrentAmount float64   `gorm:"type:decimal(15,2);default:0"`
-	RekeningInfo  string    `gorm:"type:varchar(255);not null"`
-	IsPersonal    bool      `gorm:"not null;default:false"`
-	StartDate     time.Time `gorm:"not null"`
-	EndDate       time.Time `gorm:"not null"`
-	CoverImage    string    `gorm:"type:varchar(255);not null"`
-	ContactInfo   string    `gorm:"type:varchar(100);not null"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID            uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID        uint64    `gorm:"not null" json:"user_id"`
+	CategoryID    uint64    `gorm:"not null" json:"category_id"`
+	Creator       string    `gorm:"type:varchar(100);not null" json:"creator"`
+	Title         string    `gorm:"type:varchar(255);not null" json:"title"`
+	Description   string    `gorm:"type:text;not null" json:"description"`
+	TargetAmount  float64   `gorm:"type:decimal(15,2);not null" json:"target_amount"`
+	CurrentAmount float64   `gorm:"type:decimal(15,2);default:0" json:"current_amount"`
+	RekeningInfo  string    `gorm:"type:varchar(255);not null" json:"rekening_info"`
+	IsPersonal    bool      `gorm:"not null;default:false" json:"is_personal"`
+	StartDate     time.Time `gorm:"not null" json:"start_date"`
+	EndDate       time.Time `gorm:"not null" json:"end_date"`
+	CoverImage    string    `gorm:"type:varchar(255);not null" json:"cover_image"`
+	ContactInfo   string    `gorm:"type:varchar(100);not null" json:"contact_info"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 
 	// Relasi
-	Category               Category                 `gorm:"foreignKey:CategoryID;references:ID"`
-	DonationProgramRequest []DonationProgramRequest `gorm:"foreignKey:ProgramID;references:ID"`
+	Category               Category                 `gorm:"foreignKey:CategoryID;references:ID" json:"category"`
+	DonationProgramRequest []DonationProgramRequest `gorm:"foreignKey:ProgramID;references:ID" json:"donation_program_request,omitempty"`
 }
 
 type DonationProgramRequest struct {
-	ID            uint64  `gorm:"primaryKey;autoIncrement"`
-	UserID        uint64  `gorm:"not null"`
-	CategoryID    uint64  `gorm:"not null"`
-	ProgramID     *uint64 `gorm:"default:null"` // pointer supaya bisa nil
-	StatusRequest string  `gorm:"type:enum('pending','approved','rejected');default:'pending';not null"`
-	KTPPhoto      string  `gorm:"type:varchar(255)"`
-	SelfiePhoto   string  `gorm:"type:varchar(255)"`
-	LegalDoc      string  `gorm:"type:varchar(255)"`
-	AdminNotes    string  `gorm:"type:text"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID            uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID        uint64    `gorm:"not null" json:"user_id"`
+	CategoryID    uint64    `gorm:"not null" json:"category_id"`
+	ProgramID     *uint64   `gorm:"default:null" json:"program_id"` // pointer supaya bisa nil
+	StatusRequest string    `gorm:"type:enum('pending','approved','rejected');default:'pending';not null" json:"status_request"`
+	KTPPhoto      string    `gorm:"type:varchar(255)" json:"ktp_photo"`
+	SelfiePhoto   string    `gorm:"type:varchar(255)" json:"selfie_photo"`
+	LegalDoc      string    `gorm:"type:varchar(255)" json:"legal_doc"`
+	AdminNotes    string    `gorm:"type:text" json:"admin_notes"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 
-	DonationProgram *DonationProgram `gorm:"foreignKey:ProgramID;references:ID;constraint:OnDelete:SET NULL"`
+	DonationProgram *DonationProgram `gorm:"foreignKey:ProgramID;references:ID;constraint:OnDelete:SET NULL" json:"-"`
 }
 
 type DonationProgramRequestCreate struct {
@@ -60,15 +60,15 @@ type DonationProgramRequestCreate struct {
 }
 
 type DonationProgramListItem struct {
-	ID            uint64
-	CategoryID    uint64
-	Title         string
-	Description   string
-	TargetAmount  float64
-	CurrentAmount float64
-	Creator       string
-	StartDate     time.Time
-	EndDate       time.Time
-	CoverImage    string
-	StatusRequest string
+	ID            uint64    `json:"id"`
+	CategoryID    uint64    `json:"category_id"`
+	Title         string    `json:"title"`
+	Description   string    `json:"description"`
+	TargetAmount  float64   `json:"target_amount"`
+	CurrentAmount float64   `json:"current_amount"`
+	Creator       string    `json:"creator"`
+	StartDate     time.Time `json:"start_date"`
+	EndDate       time.Time `json:"end_date"`
+	CoverImage    string    `json:"cover_image"`
+	StatusRequest string    `json:"status_request"`
 }

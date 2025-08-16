@@ -21,7 +21,7 @@ func SetupAuthRoutes(router *gin.RouterGroup, db *gorm.DB) {
 	{
 		auth.POST("/login", authController.Login)
 		auth.POST("/register", authController.Register)
-		auth.POST("/create-admin", middleware.CreateAdmin(), authController.CreateAdmin)
+		auth.POST("/admin", middleware.CreateAdmin(), authController.CreateAdmin)
 		auth.POST("/refresh", authController.RefreshToken)
 	}
 }

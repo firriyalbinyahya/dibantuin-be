@@ -124,3 +124,7 @@ func (dps *DonationProgramService) ListDonationPrograms(statusRequest, search st
 func (dps *DonationProgramService) GetDonationProgramDetail(id uint64) (*entity.DonationProgram, error) {
 	return dps.DonationProgramRepository.GetDonationProgramById(id)
 }
+
+func (dps *DonationProgramService) GetDonationProgramDetailWithoutRequest(id uint64) (*entity.DonationProgram, error) {
+	return dps.DonationProgramRepository.GetDonationProgramWithoutRequestById(id)
+}

@@ -31,7 +31,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	response.BuildSuccessResponse(c, http.StatusCreated, "registration successful", req, nil)
+	response.BuildSuccessResponse(c, http.StatusCreated, "registration successful", nil, nil)
 }
 
 func (ac *AuthController) CreateAdmin(c *gin.Context) {
@@ -68,7 +68,7 @@ func (ac *AuthController) CreateAdmin(c *gin.Context) {
 		return
 	}
 
-	response.BuildSuccessResponse(c, http.StatusCreated, "The admin account was created successfully", req, nil)
+	response.BuildSuccessResponse(c, http.StatusCreated, "The admin account was created successfully", nil, nil)
 
 }
 

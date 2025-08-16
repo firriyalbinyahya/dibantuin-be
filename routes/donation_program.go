@@ -21,7 +21,8 @@ func SetupDonationProgramRoutes(router *gin.RouterGroup, db *gorm.DB) {
 	program := router.Group("/program")
 	{
 		program.GET("/", middleware.AuthUserMiddleware(), donationProgramController.ListDonationPrograms)
-		program.GET("/:id", middleware.AuthUserMiddleware(), donationProgramController.GetDonationProgramDetail)
+		program.GET("/:id/admin", middleware.AdminOnly(), donationProgramController.GetDonationProgramDetail)
+		program.GET("/:id", middleware.AuthUserMiddleware(), donationProgramController.GetDonationProgramDetailForUser)
 		program.POST("/request", middleware.AuthUserMiddleware(), donationProgramController.RequestProgram)
 		program.PATCH("/:id/verify", middleware.AdminOnly(), donationProgramController.VerifyProgram)
 	}

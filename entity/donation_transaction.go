@@ -3,16 +3,16 @@ package entity
 import "time"
 
 type MoneyTransactionDonation struct {
-	ID              uint64  `gorm:"primaryKey"`
-	ProgramID       uint64  `gorm:"not null"`
-	UserID          uint64  `gorm:"not null"`
-	Amount          float64 `gorm:"type:decimal(15,2);not null"`
-	DonationStatus  string  `gorm:"type:enum('pending', 'success', 'failed');not null"`
-	DonorsName      string  `gorm:"type:varchar(100);not null"`
-	DonationMessage string  `gorm:"type:text"`
-	DonationPhoto   string  `gorm:"type:varchar(255);not null"`
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID              uint64    `gorm:"primaryKey" json:"id"`
+	ProgramID       uint64    `gorm:"not null" json:"program_id"`
+	UserID          uint64    `gorm:"not null" json:"user_id"`
+	Amount          float64   `gorm:"type:decimal(15,2);not null" json:"amount"`
+	DonationStatus  string    `gorm:"type:enum('pending', 'success', 'failed');not null" json:"donation_status"`
+	DonorsName      string    `gorm:"type:varchar(100);not null" json:"donors_name"`
+	DonationMessage string    `gorm:"type:text" json:"donation_message,omitempty"`
+	DonationPhoto   string    `gorm:"type:varchar(255);not null" json:"donation_photo"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
 }
 
 type MoneyTransactionDonationRequest struct {

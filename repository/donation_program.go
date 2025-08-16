@@ -43,6 +43,16 @@ func (dpr *DonationProgramRepository) GetDonationProgramById(id uint64) (*entity
 	return &program, nil
 }
 
+func (dpr *DonationProgramRepository) GetDonationProgramWithoutRequestById(id uint64) (*entity.DonationProgram, error) {
+	var program entity.DonationProgram
+	if err := dpr.DB.Preload("Category").
+		First(&program, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &program, nil
+}
+
 func (dpr *DonationProgramRepository) GetProgramRequestByProgramID(programID uint64) (*entity.DonationProgramRequest, error) {
 	var req entity.DonationProgramRequest
 	err := dpr.DB.
@@ -66,7 +76,7 @@ func (dpr *DonationProgramRepository) ListDonationPrograms(statusRequest, search
 
 	query := dpr.DB.Table("donation_programs dp").
 		Select(`dp.id, dp.category_id, dp.title, dp.description, dp.target_amount, dp.current_amount,
-	dp.creator, dp.start_date, dp.end_date, dp.cover_image, dp.status,
+	dp.creator, dp.start_date, dp.end_date, dp.cover_image,
 	dpr.status_request`).
 		Joins("LEFT JOIN donation_program_requests dpr ON dp.id = dpr.program_id")
 

@@ -17,3 +17,10 @@ type DonationReportRequest struct {
 	Description string `json:"description" binding:"required"`
 	ReportPhoto string `json:"report_photo"`
 }
+
+type PaginatedDonationReport struct {
+	Items       []DonationReport `json:"items"`
+	TotalItems  int64            `json:"total_items"`
+	TotalPages  int              `json:"total_pages"`
+	CurrentPage int              `json:"current_page"`
+}

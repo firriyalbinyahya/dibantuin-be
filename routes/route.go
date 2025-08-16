@@ -6,7 +6,7 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine, db *gorm.DB) {
-	api := router.Group("/api")
+	api := router.Group("/api/v1")
 	{
 		SetupAuthRoutes(api, db)
 		SetupDonationProgramRoutes(api, db)

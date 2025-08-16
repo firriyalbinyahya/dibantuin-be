@@ -37,6 +37,7 @@ func (us *UploadService) SavePhoto(file *multipart.FileHeader) (string, error) {
 	}
 	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), filepath.Base(file.Filename))
 	filePath := filepath.Join(us.UploadDir, filename)
+	filePath = filepath.ToSlash(filePath)
 	return filePath, nil
 }
 

@@ -24,9 +24,8 @@ func (drr *DonationReportRepository) GetDonationReportByID(id uint) (*entity.Don
 	return &report, err
 }
 
-func (drr *DonationReportRepository) Update(report *entity.DonationReport) (*entity.DonationReport, error) {
-	err := drr.DB.Save(&report).Error
-	return report, err
+func (drr *DonationReportRepository) Update(report *entity.DonationReport) error {
+	return drr.DB.Save(&report).Error
 }
 
 func (drr *DonationReportRepository) Delete(id uint) error {
