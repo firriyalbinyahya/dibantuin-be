@@ -13,6 +13,7 @@ type DonationReport struct {
 }
 
 type DonationReportRequest struct {
+	ProgramID   uint64 `json:"program_id" binding:"required"`
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
 	ReportPhoto string `json:"report_photo"`

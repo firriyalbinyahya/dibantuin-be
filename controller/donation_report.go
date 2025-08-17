@@ -15,5 +15,5 @@ func NewDonationReportController(service *service.DonationReportService) *Donati
 }
 
 func (drc *DonationReportController) CreateDonationReport(c *gin.Context) {
-	
+
 }

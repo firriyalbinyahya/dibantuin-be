@@ -22,7 +22,7 @@ func InitializeApp() *gin.Engine {
 
 	//auto migrate
 	db.AutoMigrate(&entity.Category{}, &entity.DonationProgram{}, &entity.DonationProgramRequest{},
-		&entity.DonationReport{}, &entity.MoneyTransactionDonation{}, &entity.User{},
+		&entity.MoneyTransactionDonation{}, &entity.User{},
 		&entity.UserLog{}, &entity.VerificationProgram{}, &entity.VerificationTransactionDonation{})
 
 	routes.SetupRoutes(r, db)

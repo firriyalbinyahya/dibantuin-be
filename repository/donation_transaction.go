@@ -2,6 +2,7 @@ package repository
 
 import (
 	"dibantuin-be/entity"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -80,4 +81,22 @@ func (dtr *DonationTransactionRepository) ListDonationTransactions(userID *uint6
 	}
 
 	return &transactions, totalItems, nil
+}
+
+func (dtr *DonationTransactionRepository) GetDonationTransactionsByProgramId(programID uint64, startDate, endDate time.Time) ([]entity.MoneyTransactionDonation, error) {
+	var donations []entity.MoneyTransactionDonation
+	if err := dtr.DB.Where("program_id = ? AND donation_status = ? AND created_at BETWEEN ? AND ?", programID, "success", startDate, endDate).
+		Find(&donations).Error; err != nil {
+		return nil, err
+	}
+	return donations, nil
+}
+
+func (dtr *DonationTransactionRepository) GetAllDonationTransactionsByProgramId(programID uint64) ([]entity.MoneyTransactionDonation, error) {
+	var donations []entity.MoneyTransactionDonation
+	if err := dtr.DB.Where("program_id = ? AND donation_status = ?", programID, "success").
+		Find(&donations).Error; err != nil {
+		return nil, err
+	}
+	return donations, nil
 }
