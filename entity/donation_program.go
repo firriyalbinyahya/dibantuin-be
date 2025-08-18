@@ -59,6 +59,23 @@ type DonationProgramRequestCreate struct {
 	ContactInfo  string    `json:"contact_info" binding:"required"`
 }
 
+type DonationProgramUpdateRequest struct {
+	CategoryID   uint64    `json:"category_id"`
+	Creator      string    `json:"creator"`
+	Title        string    `json:"title"`
+	Description  string    `json:"description"`
+	TargetAmount float64   `json:"target_amount"`
+	RekeningInfo string    `json:"rekening_info"`
+	IsPersonal   bool      `json:"is_personal"`
+	StartDate    time.Time `json:"start_date"`
+	EndDate      time.Time `json:"end_date"`
+	CoverImage   string    `json:"cover_image"`
+	ContactInfo  string    `json:"contact_info"`
+	KTPPhoto     string    `json:"ktp_photo,omitempty"`
+	SelfiePhoto  string    `json:"selfie_photo,omitempty"`
+	LegalDoc     string    `json:"legal_doc,omitempty"`
+}
+
 type DonationProgramListItem struct {
 	ID            uint64    `json:"id"`
 	CategoryID    uint64    `json:"category_id"`

@@ -84,6 +84,61 @@ func (dps *DonationProgramService) CreateRequest(req *entity.DonationProgramRequ
 	})
 }
 
+func (dps *DonationProgramService) UpdateProgram(programID uint64, req *entity.DonationProgramUpdateRequest, userID uint64) error {
+	program, programRequest, err := dps.DonationProgramRepository.FindProgramAndRequest(programID)
+	if err != nil {
+		return err
+	}
+
+	if program.UserID != userID {
+		return errors.New("unauthorized access")
+	}
+
+	if req.TargetAmount > 0 {
+		if req.TargetAmount < program.CurrentAmount {
+			return errors.New("target amount cannot be less than current amount")
+		}
+		program.TargetAmount = req.TargetAmount
+	}
+
+	if !req.EndDate.IsZero() {
+		if time.Now().After(req.EndDate) {
+			return errors.New("end date must be in the future")
+		}
+		if req.EndDate.Before(program.StartDate) {
+			return errors.New("end date must be after start date")
+		}
+		program.EndDate = req.EndDate
+	}
+
+	return dps.DB.Transaction(func(tx *gorm.DB) error {
+		donationRepo := repository.NewDonationProgramRepository(tx)
+
+		if programRequest.StatusRequest == "approved" {
+			programRequest.StatusRequest = "pending"
+
+			if err := donationRepo.UpdateDonationProgramRequest(programRequest); err != nil {
+				return err
+			}
+
+			// Log aksi
+			dps.UserLogService.LogUserAction(userID, "UPDATE_PROGRAM", "donation_program_requests", programRequest.ID, "request to update approved donation program")
+		} else {
+			dps.UserLogService.LogUserAction(userID, "UPDATE_PROGRAM", "donation_programs", program.ID, "update pending/rejected donation program")
+		}
+
+		if err := donationRepo.UpdateDonationProgramFromStruct(program.ID, req); err != nil {
+			return err
+		}
+
+		if err := donationRepo.UpdateDonationProgramRequestFromStruct(programRequest.ID, req); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
 func (dps *DonationProgramService) VerifyProgram(donationProgramRequestID uint64, adminID uint64,
 	status string, note string) error {
 	_, err := dps.DonationProgramRepository.GetDonationProgramRequestById(donationProgramRequestID)
@@ -127,4 +182,23 @@ func (dps *DonationProgramService) GetDonationProgramDetail(id uint64) (*entity.
 
 func (dps *DonationProgramService) GetDonationProgramDetailWithoutRequest(id uint64) (*entity.DonationProgram, error) {
 	return dps.DonationProgramRepository.GetDonationProgramWithoutRequestById(id)
+}
+
+func (dps *DonationProgramService) DeleteProgram(programID uint64, userID uint64, userRole string) error {
+	program, err := dps.DonationProgramRepository.GetDonationProgramWithoutRequestById(programID)
+	if err != nil {
+		return errors.New("program not found")
+	}
+	if program.UserID != userID && userRole != "admin" {
+		return errors.New("unauthorized access")
+	}
+
+	if err := dps.DonationProgramRepository.DeleteProgram(programID); err != nil {
+		return err
+	}
+
+	//Log aksi
+	dps.UserLogService.LogUserAction(userID, "DELETE_PROGRAM", "donation_programs", programID, "deleted donation program")
+
+	return nil
 }

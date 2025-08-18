@@ -143,6 +143,7 @@ func AuthUserMiddleware() gin.HandlerFunc {
 
 		c.Set("currentUser", user)
 		c.Set("user_id", user.ID)
+		c.Set("user_role", user.Role)
 		c.Next()
 	}
 }

@@ -22,6 +22,37 @@ func (dpr *DonationProgramRepository) CreateDonationProgramRequest(donationProgr
 	return dpr.DB.Create(donationProgramRequest).Error
 }
 
+func (dpr *DonationProgramRepository) FindProgramAndRequest(programID uint64) (*entity.DonationProgram, *entity.DonationProgramRequest, error) {
+	var program entity.DonationProgram
+	var request entity.DonationProgramRequest
+
+	if err := dpr.DB.First(&program, programID).Error; err != nil {
+		return nil, nil, err
+	}
+
+	if err := dpr.DB.Where("program_id = ?", programID).First(&request).Error; err != nil {
+		return &program, nil, err
+	}
+
+	return &program, &request, nil
+}
+
+func (r *DonationProgramRepository) UpdateDonationProgram(program *entity.DonationProgram) error {
+	return r.DB.Save(program).Error
+}
+
+func (r *DonationProgramRepository) UpdateDonationProgramRequest(req *entity.DonationProgramRequest) error {
+	return r.DB.Save(req).Error
+}
+
+func (r *DonationProgramRepository) UpdateDonationProgramFromStruct(programID uint64, req *entity.DonationProgramUpdateRequest) error {
+	return r.DB.Model(&entity.DonationProgram{}).Where("id = ?", programID).Updates(req).Error
+}
+
+func (r *DonationProgramRepository) UpdateDonationProgramRequestFromStruct(requestID uint64, req *entity.DonationProgramUpdateRequest) error {
+	return r.DB.Model(&entity.DonationProgramRequest{}).Where("id = ?", requestID).Updates(req).Error
+}
+
 func (dpr *DonationProgramRepository) GetDonationProgramRequestById(id uint64) (*entity.DonationProgramRequest, error) {
 	var request entity.DonationProgramRequest
 	err := dpr.DB.Where("id = ?", id).First(&request).Error
@@ -102,4 +133,8 @@ func (dpr *DonationProgramRepository) ListDonationPrograms(statusRequest, search
 	}
 
 	return &programs, total, nil
+}
+
+func (r *DonationProgramRepository) DeleteProgram(programID uint64) error {
+	return r.DB.Delete(&entity.DonationProgram{}, programID).Error
 }

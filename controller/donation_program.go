@@ -50,6 +50,35 @@ func (dpc *DonationProgramController) RequestProgram(c *gin.Context) {
 	response.BuildSuccessResponse(c, http.StatusCreated, "Success request donation program. Wait admin to verify.", donationProgramCreate, nil)
 }
 
+func (dpc *DonationProgramController) UpdateDonationProgram(c *gin.Context) {
+	programIDStr := c.Param("id")
+	programID, err := strconv.ParseUint(programIDStr, 10, 64)
+	if err != nil {
+		response.BuildErrorResponse(c, errors.New("invalid program id"))
+		return
+	}
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		response.BuildErrorResponse(c, errors.New("user not authenticated"))
+		return
+	}
+
+	var req entity.DonationProgramUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BuildErrorResponse(c, errors.New("invalid request body"))
+		return
+	}
+
+	if err := dpc.Service.UpdateProgram(programID, &req, userID.(uint64)); err != nil {
+		response.BuildErrorResponse(c, err)
+		return
+	}
+
+	response.BuildSuccessResponse(c, http.StatusOK, "success update donation program.", nil, nil)
+
+}
+
 func (dpc *DonationProgramController) VerifyProgram(c *gin.Context) {
 
 	programRequestIDParam := c.Param("id")
@@ -152,4 +181,32 @@ func (dpc *DonationProgramController) GetDonationProgramDetailForUser(c *gin.Con
 
 	response.BuildSuccessResponse(c, http.StatusOK, "Success get data detail donation program",
 		program, nil)
+}
+
+func (dpc *DonationProgramController) DeleteDonationProgram(c *gin.Context) {
+	programIDStr := c.Param("id")
+	programID, err := strconv.ParseUint(programIDStr, 10, 64)
+	if err != nil {
+		response.BuildErrorResponse(c, fmt.Errorf("invalid program id"))
+		return
+	}
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		response.BuildErrorResponse(c, fmt.Errorf("user not authenticated"))
+		return
+	}
+
+	userRole, exists := c.Get("user_role")
+	if !exists {
+		response.BuildErrorResponse(c, fmt.Errorf("user role not found"))
+		return
+	}
+
+	if err := dpc.Service.DeleteProgram(programID, userID.(uint64), userRole.(string)); err != nil {
+		response.BuildErrorResponse(c, err)
+		return
+	}
+
+	response.BuildSuccessResponse(c, http.StatusOK, "Donation program deleted successfully", nil, nil)
 }
