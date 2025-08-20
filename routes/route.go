@@ -9,6 +9,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	api := router.Group("/api/v1")
 	{
 		SetupAuthRoutes(api, db)
+		SetupUserRoutes(api, db)
 		SetupDonationProgramRoutes(api, db)
 		SetupDonationTransactionRoutes(api, db)
 		SetupUserLogRoutes(api, db)
