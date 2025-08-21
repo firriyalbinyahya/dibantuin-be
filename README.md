@@ -11,7 +11,7 @@ Create a backend system that can accommodate aid, record transactions, and make 
 
 ## Table of Contents
 
-- [Key Features](#key-features)
+- [Main Features](#main-features)
 - [Technology Used](#technology-used)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -21,7 +21,7 @@ Create a backend system that can accommodate aid, record transactions, and make 
 
 ---
 
-## Key Features
+## Main Features
 
 * User Management (Registration, Login, Authentication using JWT)
 * CRUD Donation Programs
