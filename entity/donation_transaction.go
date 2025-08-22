@@ -13,6 +13,8 @@ type MoneyTransactionDonation struct {
 	DonationPhoto   string    `gorm:"type:varchar(255);not null" json:"donation_photo"`
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
+
+	DonationProgram DonationProgram `gorm:"foreignKey:ProgramID;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 type MoneyTransactionDonationRequest struct {

@@ -38,7 +38,7 @@ type DonationProgramRequest struct {
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 
-	DonationProgram *DonationProgram `gorm:"foreignKey:ProgramID;references:ID;constraint:OnDelete:SET NULL" json:"-"`
+	DonationProgram *DonationProgram `gorm:"foreignKey:ProgramID;references:ID;constraint:OnDelete:CASCADE" json:"-"`
 }
 
 type DonationProgramRequestCreate struct {
